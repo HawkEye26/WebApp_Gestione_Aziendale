@@ -7,6 +7,7 @@
 <script setup>
 import { computed } from 'vue'
 
+// Determina stile delle card
 const props = defineProps({
     variant: {
         type: String,
@@ -19,9 +20,11 @@ const props = defineProps({
     }
 })
 
+// Classe comune per tutte le card
 const cardClasses = computed(() => {
     const baseClasses = 'rounded-xl border text-card-foreground shadow'
 
+    // Stile in base alla variante
     const variantClasses = {
         default: 'bg-card',
         outline: 'border border-border',

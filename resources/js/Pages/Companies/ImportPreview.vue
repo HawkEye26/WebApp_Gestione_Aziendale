@@ -8,14 +8,18 @@ import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, Info, Shield, FileTe
 
 // stato del file selezionato
 const file = ref(null)
-// per messaggi di feedback
+
+// per messaggi di feedback per l'importazione
 const success = ref('')
 const errors = ref('')
 
 // Funzione per ottenere l'icona del file in base all'estensione
 function getFileIcon(fileName) {
+
+  // Restituisce l'icona nel caso sia vuota o nulla
   if (!fileName) return FileSpreadsheet;
 
+  // Divide il nome del file e prende solo l'estensione per selezionare l'icona
   const extension = fileName.split('.').pop().toLowerCase();
   switch (extension) {
     case 'json':
@@ -29,13 +33,18 @@ function getFileIcon(fileName) {
   }
 }
 
+// Gestione selezione file
 function handleFileChange(e) {
   errors.value = ''
   success.value = ''
+
+  // Prende il primo elemento dalla lista del file
   file.value = e.target.files[0] || null
 
   if (file.value) {
     const fileType = file.value.name.split('.').pop().toLowerCase();
+
+    // Variabile temporanea per stampare a schermo
     let fileTypeText = '';
 
     switch (fileType) {
@@ -46,6 +55,8 @@ function handleFileChange(e) {
         fileTypeText = 'CSV';
         break;
       case 'xls':
+        fileTypeText = 'XLS';
+        break;
       case 'xlsx':
         fileTypeText = 'Excel';
         break;
@@ -57,6 +68,7 @@ function handleFileChange(e) {
   }
 }
 
+// Controllo upload
 function upload() {
   if (!file.value) {
     errors.value = 'Seleziona un file prima di caricare.'
@@ -67,19 +79,19 @@ function upload() {
   // Toast di inizio caricamento
   toast.info('Caricamento in corso... ⏳', 'Il file è in fase di elaborazione elaborato');
 
+  // Contenitore per inserire il file anche binario
   const formData = new FormData()
   formData.append('file', file.value)
 
+  // Sistema per l'importazione del file esterno passando il file nel form
   router.post(route('companies.importStore'), formData, {
     onSuccess: (response) => {
       success.value = 'File importato con successo!'
       file.value = null
-      // Toast di successo con dettagli
       toast.success('Import completato! 🎉', 'File importato con successo');
     },
     onError: (formErrors) => {
       errors.value = formErrors.file ?? 'Errore durante l\'importazione'
-      // Toast di errore
       toast.error('Errore Import! ❌', formErrors.file ?? 'Errore durante l\'importazione');
     }
   });
@@ -90,21 +102,20 @@ function upload() {
   <AuthenticatedLayout>
     <template #header>
       <div class="space-y-6">
-        <!-- Header Card -->
+        <!-- Titolo -->
         <Card>
           <CardHeader>
             <CardTitle class="flex items-center gap-2">
               <Upload class="h-6 w-6 text-blue-600" />
-              Importazione Aziende da Excel
+              Importazione Aziende da File Excel
             </CardTitle>
           </CardHeader>
         </Card>
 
-        <!-- Main Import Card -->
+        <!-- Struttura di importazione -->
         <Card>
           <CardContent class="p-8">
             <div class="max-w-2xl mx-auto">
-              <!-- Upload Area -->
               <div
                 class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
                 <FileSpreadsheet class="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -112,26 +123,30 @@ function upload() {
                 <p class="text-sm text-gray-500 mb-4">Carica un file Excel (.xls, .xlsx), JSON o CSV con i dati delle
                   aziende</p>
 
+                <!-- Gestione selezione del file con @change -->
                 <input type="file" accept=".xls,.xlsx,.json,.csv" @change="handleFileChange"
                   class="block w-full text-sm text-gray-700 bg-white border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
               </div>
 
-              <!-- File Preview -->
+              <!-- Preview del file -->
               <div v-if="file" class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div class="flex items-center gap-3">
+                  <!-- Icona in base al tipo -->
                   <component :is="getFileIcon(file.name)" class="h-8 w-8 text-blue-600" />
                   <div class="flex-1">
                     <h4 class="font-medium text-blue-900">{{ file.name }}</h4>
                     <p class="text-sm text-blue-700">
+                      <!-- Mostra l'estensione del file in maiuscolo e converte la dimensione da byte a KB -->
                       Tipo: {{ file.name.split('.').pop().toUpperCase() }} •
                       Dimensione: {{ (file.size / 1024).toFixed(1) }} KB
                     </p>
                   </div>
+                  <!-- Simbolo di conferma -->
                   <CheckCircle class="h-6 w-6 text-green-600" />
                 </div>
               </div>
 
-              <!-- Messages -->
+              <!-- Messaggio in caso di errore o successo -->
               <div v-if="errors" class="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
                 <div class="flex items-center gap-2">
                   <AlertCircle class="h-5 w-5 text-red-600" />
@@ -146,8 +161,9 @@ function upload() {
                 </div>
               </div>
 
-              <!-- Upload Button -->
+              <!-- Bottone Upload -->
               <div class="mt-6 flex justify-center">
+                <!-- Attiva il bottone solo dopo il controllo che l'utente sia autenticato ed abbia i permessi per importare -->
                 <button
                   v-if="$page.props.auth.user && Array.isArray($page.props.auth.user.can) && $page.props.auth.user.can.includes('import files')"
                   @click="upload"
@@ -161,9 +177,8 @@ function upload() {
           </CardContent>
         </Card>
 
-        <!-- Info Cards -->
+        <!-- Card estetiche inferiori -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Formato File -->
           <Card>
             <CardContent class="p-6">
               <div class="flex items-center space-x-3">
@@ -178,7 +193,6 @@ function upload() {
             </CardContent>
           </Card>
 
-          <!-- Sicurezza -->
           <Card>
             <CardContent class="p-6">
               <div class="flex items-center space-x-3">
@@ -193,7 +207,6 @@ function upload() {
             </CardContent>
           </Card>
 
-          <!-- Supporto -->
           <Card>
             <CardContent class="p-6">
               <div class="flex items-center space-x-3">
@@ -209,7 +222,7 @@ function upload() {
           </Card>
         </div>
 
-        <!-- Istruzioni Card -->
+        <!-- Istruzioni -->
         <Card>
           <CardHeader>
             <CardTitle class="text-lg">📋 Istruzioni per l'importazione</CardTitle>
@@ -249,7 +262,7 @@ function upload() {
                 <div class="space-y-2">
                   <div class="flex items-center gap-2 text-sm text-gray-600">
                     <div class="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                    <span>Prima riga deve contenere le intestazioni</span>
+                    <span>La prima riga deve contenere le intestazioni</span>
                   </div>
                   <div class="flex items-center gap-2 text-sm text-gray-600">
                     <div class="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
@@ -261,7 +274,7 @@ function upload() {
                   </div>
                   <div class="flex items-center gap-2 text-sm text-gray-600">
                     <div class="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                    <span>Email devono terminare con .it o .com</span>
+                    <span>L'email devono terminare con .it o .com</span>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { useForm } from '@inertiajs/vue3';
 import { toast } from '@/utils/toast';
@@ -7,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building2, MapPin, Mail, Save, X, Edit } from 'lucide-vue-next';
 import { Link } from '@inertiajs/vue3';
 
+// Props per l'oggetto nel database
 const props = defineProps({
     company: {
         type: Object,
@@ -14,6 +14,7 @@ const props = defineProps({
     }
 })
 
+// Pre-popolamento del form
 const form = useForm({
     company_name: props.company.company_name,
     address: props.company.address,
@@ -24,6 +25,7 @@ const form = useForm({
     email: props.company.email,
 })
 
+// Modifica dei dati a cui passiamo l'id 
 function submit() {
     form.put(route('companies.update', props.company.id), {
         onSuccess: () => {
@@ -41,7 +43,7 @@ function submit() {
     <AuthenticatedLayout>
         <template #header>
             <div class="space-y-6">
-                <!-- Header Card -->
+                <!-- Titolo -->
                 <Card>
                     <CardHeader>
                         <CardTitle class="flex items-center gap-2">
@@ -51,7 +53,7 @@ function submit() {
                     </CardHeader>
                 </Card>
 
-                <!-- Form Card -->
+                <!-- Form dei dati -->
                 <Card>
                     <CardContent class="p-8">
                         <form @submit.prevent="submit" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

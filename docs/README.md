@@ -102,13 +102,6 @@ Build:    Vite + Hot Module Replacement
 -   **Problemi di autenticazione** → [User Guide](user-guide.md#problemi-di-accesso)
 -   **Import aziende** → [User Guide](user-guide.md#gestione-aziende)
 -   **Errori di sviluppo** → [Technical Docs](technical-documentation.md)
-
-### Contatti
-
--   **Email**:
--   **Bug Reports**: [GitHub Issues](https://github.com/[TUO-USERNAME]/WebAppGAD/issues)
--   **Discussioni**: [GitHub Discussions](https://github.com/[TUO-USERNAME]/WebAppGAD/discussions)
-
 ---
 
 ## Versioni e Aggiornamenti

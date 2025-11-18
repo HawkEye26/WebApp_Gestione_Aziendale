@@ -1,3 +1,4 @@
+<!-- Gestisce la grandezza delle descrizioni -->
 <template>
     <p class="text-sm text-muted-foreground">
         <slot />

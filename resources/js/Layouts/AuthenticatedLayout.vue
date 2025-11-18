@@ -8,6 +8,7 @@ import ResponsiveNavLink from '@/components/ResponsiveNavLink.vue';
 import ToastContainer from '@/components/ToastContainer.vue';
 import { Link } from '@inertiajs/vue3';
 
+// Variabile reattiva per menu mobile
 const showingNavigationDropdown = ref(false);
 </script>
 
@@ -15,7 +16,7 @@ const showingNavigationDropdown = ref(false);
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav class="border-b border-gray-100 bg-white">
-                <!-- Primary Navigation Menu -->
+                <!-- Menu superiore per la navigazione -->
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between">
                         <div class="flex">
@@ -26,7 +27,7 @@ const showingNavigationDropdown = ref(false);
                                 </Link>
                             </div>
 
-                            <!-- Navigation Links -->
+                            <!-- Links per la navigazione -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
@@ -38,6 +39,7 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('companies.create')">
                                     Aggiungi
                                 </NavLink>
+                                <!-- Questo Link avviene se l'utente loggato è admin -->
                                 <NavLink v-if="$page.props.isAdmin" :href="route('companies.importPreview')"
                                     :active="route().current('companies.importPreview')">
                                     Importa
@@ -47,7 +49,7 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                            <!-- Settings Dropdown -->
+                            <!-- Tendina utente -->
                             <div class="relative ms-3">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
@@ -80,7 +82,7 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
 
-                        <!-- Hamburger -->
+                        <!-- Hamburger menu per mobile -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button @click="
                                 showingNavigationDropdown =
@@ -106,7 +108,7 @@ const showingNavigationDropdown = ref(false);
                     </div>
                 </div>
 
-                <!-- Responsive Navigation Menu -->
+                <!-- Menu di navigazione dinamico per mobile-->
                 <div :class="{
                     block: showingNavigationDropdown,
                     hidden: !showingNavigationDropdown,
@@ -117,7 +119,7 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                     </div>
 
-                    <!-- Responsive Settings Options -->
+                    <!-- Dati utente menu per mobile -->
                     <div class="border-t border-gray-200 pb-1 pt-4">
                         <div class="px-4">
                             <div class="text-base font-medium text-gray-800">
@@ -140,19 +142,19 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </nav>
 
-            <!-- Page Heading -->
+            <!-- Titolo della pagina -->
             <header class="bg-white shadow" v-if="$slots.header">
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 ">
                     <slot name="header" />
                 </div>
             </header>
 
-            <!-- Page Content -->
+            <!-- Contenuto della pagina -->
             <main>
                 <slot />
             </main>
 
-            <!-- Toast Container -->
+            <!-- Messaggi flash o notifiche -->
             <ToastContainer />
         </div>
     </div>

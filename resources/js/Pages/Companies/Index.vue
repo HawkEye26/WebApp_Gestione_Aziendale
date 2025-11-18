@@ -46,6 +46,7 @@ const filteredCompanies = computed(() => {
 
 // Gestione selezione multipla
 function toggleSelectAll() {
+    // Inverte il valore
     selectAll.value = !selectAll.value;
     if (selectAll.value) {
         // Seleziona tutte le aziende filtrate visibili
@@ -56,7 +57,9 @@ function toggleSelectAll() {
     }
 }
 
+// Gestione selezione singola
 function toggleCompanySelection(companyId) {
+    // Cerca l'id se presente deseleziona altrimenti seleziona
     const index = selectedCompanies.value.indexOf(companyId);
     if (index > -1) {
         selectedCompanies.value.splice(index, 1);
@@ -68,28 +71,37 @@ function toggleCompanySelection(companyId) {
     selectAll.value = selectedCompanies.value.length === filteredCompanies.value.length && filteredCompanies.value.length > 0;
 }
 
+// Popup di eliminazione tramite "Elimina selezionati"
 function deleteSelectedCompanies() {
+
+    // Controlla se ce almeno una selezione
     if (selectedCompanies.value.length === 0) {
         toast.warning('Nessuna selezione', 'Seleziona almeno un\'azienda da eliminare');
         return;
     }
 
+    // Conta aziende e crea messaggio
     const count = selectedCompanies.value.length;
     const message = count === 1
         ? 'Vuoi davvero eliminare l\'azienda selezionata?'
         : `Vuoi davvero eliminare le ${count} aziende selezionate?`;
 
+    // Popup di conferma eliminazione
     if (confirm(message)) {
+
+        // Passa id da eliminare e gestisce i casi
         router.delete(route('companies.bulkDestroy'), {
             data: {
                 ids: selectedCompanies.value
             },
+            // Svuota array, deseleziona checkbox e mostra messaggio
             onSuccess: () => {
                 selectedCompanies.value = [];
                 selectAll.value = false;
                 toast.success(`${count} aziend${count === 1 ? 'a eliminata' : 'e eliminate'}! 🗑️`,
                     `L${count === 1 ? '\'azienda è stata rimossa' : 'e aziende sono state rimosse'} con successo`);
             },
+            // Stampa messaggio
             onError: () => {
                 toast.error('Errore!', 'Impossibile eliminare le aziende selezionate');
             }
@@ -97,6 +109,7 @@ function deleteSelectedCompanies() {
     }
 }
 
+// Popup di eliminazione tramite tasto riga
 function deleteCompany(id) {
     if (confirm("Vuoi davero eliminare l'azienda?")) {
         router.delete(route('companies.destroy', id), {
@@ -115,7 +128,7 @@ function deleteCompany(id) {
     <AuthenticatedLayout>
         <template #header>
             <div class="space-y-6">
-                <!-- Header Card -->
+                <!-- Titolo -->
                 <Card>
                     <CardHeader>
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -127,10 +140,9 @@ function deleteCompany(id) {
                     </CardHeader>
                 </Card>
 
-                <!-- Search and Stats Card -->
+                <!-- Barra di ricerca -->
                 <Card>
                     <CardContent class="p-6">
-                        <!-- Search Section -->
                         <div>
                             <label for="search" class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                                 <Search class="h-4 w-4 text-gray-500" />
@@ -140,30 +152,33 @@ function deleteCompany(id) {
                                 <input id="search" type="text" v-model="searchTerm"
                                     placeholder="Cerca per nome, città, email, indirizzo..."
                                     class="w-full pl-10 pr-4 py-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                                <!-- Componenete che mostra icona lente -->
                                 <Search
                                     class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                             </div>
                         </div>
 
-                        <!-- Bulk Actions -->
+                        <!-- Box selezione -->
                         <div v-if="selectedCompanies.length > 0"
                             class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <CheckSquare class="h-5 w-5 text-blue-600" />
+                                    <!-- Mostra il numero di selezione e stampa messaggio -->
                                     <span class="text-sm font-medium text-blue-900">
                                         {{ selectedCompanies.length }} {{ selectedCompanies.length === 1 ? 'azienda selezionata' : 'aziende selezionate' }}
                                     </span>
                                 </div>
                                 <button @click="deleteSelectedCompanies"
                                     class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                                    <!-- Bottone -->
                                     <Trash2 class="h-4 w-4" />
                                     Elimina Selezionate
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Flash Message -->
+                        <!-- Messaggio flesh -->
                         <div v-if="$page.props.flash.message" class="mt-4">
                             <Alert class="border-blue-200 bg-blue-50">
                                 <Building2 class="h-4 w-4 text-blue-600" />
@@ -176,7 +191,7 @@ function deleteCompany(id) {
                     </CardContent>
                 </Card>
 
-                <!-- Companies Table Card -->
+                <!-- Tabella Compagnie -->
                 <Card>
                     <CardContent class="p-0">
                         <div class="overflow-x-auto">
@@ -186,6 +201,7 @@ function deleteCompany(id) {
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             <button @click="toggleSelectAll" class="flex items-center gap-2">
+                                                <!-- Mostra la casella piena o vuota della colonna Seleziona -->
                                                 <component :is="selectAll ? CheckSquare : Square"
                                                     class="h-4 w-4 text-blue-600 hover:text-blue-800 transition-colors" />
                                                 <span>Seleziona</span>
@@ -221,6 +237,7 @@ function deleteCompany(id) {
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
+                                    <!-- Cicla su tutte le compagnie per gestire il rendering quando ci troviamo sopra una righa o contiene l'id dell'azienda che abbiamo selezionato -->
                                     <tr v-for="company in filteredCompanies" :key="company.id"
                                         class="hover:bg-gray-50 transition-colors"
                                         :class="{ 'bg-blue-50': selectedCompanies.includes(company.id) }">
@@ -283,7 +300,7 @@ function deleteCompany(id) {
                                 </tbody>
                             </table>
 
-                            <!-- Empty State -->
+                            <!-- Messaggio ricerca fallita -->
                             <div v-if="filteredCompanies.length === 0" class="text-center py-12">
                                 <Building2 class="mx-auto h-12 w-12 text-gray-400" />
                                 <h3 class="mt-2 text-sm font-medium text-gray-900">
@@ -297,7 +314,7 @@ function deleteCompany(id) {
                     </CardContent>
                 </Card>
 
-                <!-- Pagination Card -->
+                <!-- Pagination -->
                 <Card v-if="companies.links && companies.links.length > 3">
                     <CardContent class="p-4">
                         <Pagination :links="companies.links" />

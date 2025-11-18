@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
+    // Trait di factory per l'ereditarietà
     use HasFactory;
 
+    // Campi che possono essere riempiti in massa
     protected $fillable = [
         'company_name',
         'address',

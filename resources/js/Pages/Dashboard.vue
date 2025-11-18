@@ -51,7 +51,7 @@ const chartData = computed(() => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <!-- Banner benvenuto -->
+                <!-- Banner di benvenuto -->
                 <div class="mb-8 overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg sm:rounded-lg">
                     <div class="p-8 text-white">
                         <h1 class="text-3xl font-bold mb-2">Benvenuto nel Portale Aziendale! 🏢</h1>
@@ -90,6 +90,7 @@ const chartData = computed(() => {
                                 <Plus class="w-3 h-3 mr-1" />
                                 Aggiungi
                                 </Link>
+                                <!-- Mostra solo se l'utente è admin -->
                                 <Link v-if="$page.props.isAdmin" :href="route('companies.importPreview')"
                                     class="inline-flex items-center px-3 py-1 bg-orange-500 text-white text-xs rounded-md hover:bg-orange-600 transition">
                                 <Upload class="w-3 h-3 mr-1" />
@@ -108,7 +109,7 @@ const chartData = computed(() => {
                             <CardTitle class="flex items-center">
                                 <!-- Icona -->
                                 <MapPin class="w-5 h-5 mr-2 text-indigo-600" />
-                                Top 5 Regioni per Aziende
+                                Top 10 Regioni per Aziende
                             </CardTitle>
                             <CardDescription>
                                 Distribuzione geografica delle aziende registrate
@@ -131,7 +132,7 @@ const chartData = computed(() => {
                                 Aziende Aggiunte di Recente
                             </CardTitle>
                             <CardDescription>
-                                Le ultime 5 aziende registrate nel sistema
+                                Le ultime 7 aziende registrate nel sistema
                             </CardDescription>
                         </CardHeader>
                         <CardContent>

@@ -10,14 +10,13 @@ use Tests\TestCase;
 
 class CompanyStoreTest extends TestCase
 {
-    use RefreshDatabase; // Importante: pulisce il database tra i test
+    // Importante: pulisce il database tra i test
+    use RefreshDatabase;
 
-    /**
-     * Test per la creazione di una nuova azienda
-     */
+    // Test per la creazione di una nuova azienda
     public function test_can_add_the_company(): void
     {
-        // Crea un utente per l'autenticazione (questo VA nel database per la sessione)
+        // Crea un utente per l'autenticazione (questo va nel database per la sessione)
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -35,8 +34,10 @@ class CompanyStoreTest extends TestCase
         // Simula l'invio del form da parte dell'utente autenticato
         $res = $this->actingAs($user)->post('/Company/store', $data);
 
+        // Controlla che ritorni a /Company
         $res->assertRedirect('/Company');
 
+        // Verifica nel database se è stata salvata
         $this->assertDatabaseHas('companies', [
             'company_name' => 'Azienda Agricola Fabbri',
             'address' => 'Via Pisacaro 456',
@@ -49,6 +50,7 @@ class CompanyStoreTest extends TestCase
     }
 
 
+    // Test per leggere un'azienda
     public function test_it_reads_a_company()
     {
         /** @var User $user */
@@ -69,12 +71,14 @@ class CompanyStoreTest extends TestCase
         // Simula la richiesta autenticata per visualizzare l'azienda
         $response = $this->actingAs($user)->get("/Company/show/{$company->id}");
 
+        // Controlla se la pagina esiste
         $response->assertStatus(200);
 
         // Verifica che la pagina contenga il nome dell'azienda
         $response->assertSee($company->company_name);
     }
 
+    // Test per aggiornare un'azienda
     public function test_can_update_a_company(): void
     {
         /** @var User $user */
@@ -103,7 +107,7 @@ class CompanyStoreTest extends TestCase
         ];
 
         // Simula l'aggiornamento
-        $response = $this->actingAs($user)->post("/Company/update/{$company->id}", $updatedData);
+        $response = $this->actingAs($user)->put("/Company/{$company->id}", $updatedData);
 
         $response->assertRedirect('/Company');
 
@@ -120,6 +124,7 @@ class CompanyStoreTest extends TestCase
         ]);
     }
 
+    // Test per cancellare un'azienda
     public function test_can_delete_a_company(): void
     {
         /** @var User $user */

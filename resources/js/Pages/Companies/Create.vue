@@ -1,11 +1,11 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { toast } from '@/utils/toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// icone svg ottimizzate
 import { Building2, MapPin, Mail, Save, X, Info, Shield, Users } from 'lucide-vue-next';
 
 const form = useForm({
@@ -18,17 +18,22 @@ const form = useForm({
     email: '',
 })
 
+// valore reattivo alla variabile
 const emailDomainError = ref('');
 
 // Funzione per validare email
 function validateEmailDomain() {
+    
+    // normalizza input per evitare errori
     const email = form.email.toLowerCase();
 
+    // controllo dominio se email esiste
     if (email && !email.endsWith('.it') && !email.endsWith('.com')) {
         emailDomainError.value = 'L\'email deve terminare con .it o .com';
         toast.warning('Email non valida', 'L\'email deve terminare con .it o .com');
         return false;
     } else {
+        // cancella gli errori
         emailDomainError.value = '';
         return true;
     }
@@ -43,6 +48,7 @@ function submit() {
         return;
     }
 
+    // Invio dati con validazione
     form.post(route('companies.store'), {
         onSuccess: () => {
             toast.success('Azienda creata! 🎉', 'L\'azienda è stata registrata con successo');
@@ -59,7 +65,7 @@ function submit() {
     <AuthenticatedLayout>
         <template #header>
             <div class="space-y-6">
-                <!-- Header Card -->
+                <!-- Titolo -->
                 <Card>
                     <CardHeader>
                         <CardTitle class="flex items-center gap-2">
@@ -69,10 +75,12 @@ function submit() {
                     </CardHeader>
                 </Card>
 
-                <!-- Form Card -->
+                <!-- Form Dati -->
                 <Card>
                     <CardContent class="p-8">
+                        <!-- Preveniene aggiornameto pagina con opzione di adattamento grid -->
                         <form @submit.prevent="submit" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            
                             <!-- Nome Azienda -->
                             <div class="flex flex-col space-y-2">
                                 <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -175,7 +183,7 @@ function submit() {
                     </CardContent>
                 </Card>
 
-                <!-- Cards Informative -->
+                <!-- Cards estetiche inferiori -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Info Card -->
                     <Card>
@@ -193,7 +201,6 @@ function submit() {
                         </CardContent>
                     </Card>
 
-                    <!-- Privacy Card -->
                     <Card>
                         <CardContent class="p-6">
                             <div class="flex items-center space-x-3">
@@ -209,7 +216,6 @@ function submit() {
                         </CardContent>
                     </Card>
 
-                    <!-- Support Card -->
                     <Card>
                         <CardContent class="p-6">
                             <div class="flex items-center space-x-3">
@@ -226,7 +232,7 @@ function submit() {
                     </Card>
                 </div>
 
-                <!-- Suggerimenti Card -->
+                <!-- Suggerimenti -->
                 <Card>
                     <CardHeader>
                         <CardTitle class="text-lg">💡 Suggerimenti per la compilazione</CardTitle>

@@ -13,6 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+    // Tutti i trait per aggiungere metodi e proprietà
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -21,22 +22,14 @@ class User extends Authenticatable
     use TwoFactorAuthenticatable;
     use HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Campi popolabili
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    // Campi nascosti quando trasformi il modello in un formato leggibile
     protected $hidden = [
         'password',
         'remember_token',
@@ -44,20 +37,7 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-        'profile_photo_url',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Convertitore automatico di datetima in oggetto Carbon e hash della password
     protected function casts(): array
     {
         return [
@@ -65,5 +45,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
 }

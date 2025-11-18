@@ -8,6 +8,7 @@ defineProps({
 </script>
 
 <template>
+    <!-- itera atraverso l'array link usando la chiave index -->
     <div class="flex flex-wrap items-center space-x-1 mt-4">
         <Link v-for="(link, index) in links" :key="index" :href="link.url || '#'" v-html="link.label"
             class="px-3 py-1 text-sm rounded border" :class="[
